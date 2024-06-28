@@ -24,7 +24,6 @@ export function About (){
                 <Typography variant="h6" align="left" paragraph>Funcionalidade de visualizar fornecedores</Typography>
                 Na página de visualização de fornecedores, você pode visualizar todos os fornecedores cadastrados, editar os dados dos fornecedores, excluir fornecedores e visualizar os detalhes de cada fornecedor, incluindo os endereços e contatos referentes a cada fornecedor.
                 Além disso é possível adicionar novos endereços e contatos para cada fornecedor e editar e excluir os endereços e contatos já cadastrados.
-                Pode paginar a lista de fornecedores.
               </Typography>
               
             </Paper>

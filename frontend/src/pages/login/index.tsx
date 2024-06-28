@@ -52,7 +52,7 @@ export default function Login() {
               Bem-Vindo (a) ao Sistema de Fornecedores!
             </Typography>
             <Typography variant="body1">
-              Este é um sistema de gerenciamento de fornecedores feito com o objetivo de apresentar uma proposta de solução para o desafio técnico proposto pela empresa <strong>Insight Data Science Lab</strong>.
+              Este é um sistema de gerenciamento de fornecedores feito com o objetivo de organizar informações de diversos fornecedores.
             </Typography>
           </Paper>
         </Grid>
