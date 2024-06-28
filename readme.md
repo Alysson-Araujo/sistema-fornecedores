@@ -1,38 +1,12 @@
-# Solução para o desafio de programação proposto pela empresa [**Insight Data Science Lab**](https://www.insightlab.ufc.br/)
+## Descrição do projeto
 
-<br>
-
-Olá, seja bem-vindo(a) ao repositório da solução para o desafio de Desenvolvimento FullStack proposto pela empresa [**Insight Data Science Lab**](https://www.insightlab.ufc.br/), vaga para graduados. Neste texto, você encontrará uma descrição detalhada de como foi realizado a solução para o desafio proposto, desde a modelagem do banco de dados até a implementação do projeto deploy do mesmo.
-
-## Proposta da vaga
-
-O objetivo da Insight Lab com é encontrar desenvolvedores para trabalharem no Projeto “Cultura, inovação e inclusão social no Ceará” do Programa Cientista Chefe da Funcap. A informações que eu encotrei sobre esse projeto podem ser encontradas [aqui](https://www.funcap.ce.gov.br/cientista-chefe-descricao-dos-programas/#:~:text=Cultura%2C%20Inova%C3%A7%C3%A3o%20e%20Inclus%C3%A3o%20Social,exclu%C3%ADdos%20do%20direito%20%C3%A0%20cultura.).
-
-
-<br>
-<br>
-
-## Descrição do desafio
-
-O desafio proposto pela empresa **Insight Data Science Lab** foi desenvolver uma aplicação web (front-end e back-end) que fosse possível o cadastro de fornecedores para o sistema de gestão de processos de uma organização fictícia. O back-end deve possuir a seguintes funcionalidades:
+Esse é um sistema de gerenciamento de fornecedores simples no qual possui as seguintes funcionalidaes no backend são:
 
 * Cadastrar fornecedor;
 * Listar fornecedores cadastrados;
 * Editar, visualizar e excluir fornecedores cadastrados.
 
-Enquanto isso, o front-end deve utilizar a API desenvolvida no back-end para realizar as funcionalidades de cadaastrar um novo fornecedor, listar fornecedores cadastrados, editar suas informações e excluir os fornecedores cadastrados, além de poder implementar funcionalidades extras desenvolvedor achar necessário.
-
-<br>
-
-<br>
-
-## Link e Credenciais para acesso à aplicação
-
-[Site da aplicação](https://desafio-insightlab-nu.vercel.app/)
-
-email de acesso: admin@admin.com
-
-senha de acesso: adminsecreto123
+Enquanto isso, o front-end deve utilizar a API desenvolvida no back-end para realizar as funcionalidades de cadastrar um novo fornecedor, listar fornecedores cadastrados, editar suas informações e excluir os fornecedores cadastrados.
 
 <br>
 
@@ -40,14 +14,12 @@ senha de acesso: adminsecreto123
 
 ## Tecnologias utilizadas
 
-No edital da vaga, a empresa **Insight Data Science Lab** especificou que o back-end deve ser desenvolvido usando Spring Boot e o front-end deve ser desenvolvido usando React. O banco de dados a ser utilizado não foi especificado, então optei por utilizar o banco de dados relacional PostgreSQL.
-
-A plataforma que escolhi para colocar o repositório da aplicação foi o Gitlab, pois sua interface ajuda bastante a gerenciar melhor o projeto.
+O back-end foi desenvolvido usando Spring Boot e o front-end foi desenvolvido usando React. O banco de dados utilizado foi o PostgreSQL.
 
 <br>
 
 ## Modelagem do banco de dados
-Inicialmente, eu busquei entender quais são as características e informações necessárias para um forncedor. Dado que não foi dito especificamente qual era o tipo de fornecedor que seria trabalhado, busquei construir um modelo mais genérico com informações consideradas importantes para qualquer tipo de fornecedor. Dito isso, o modelo do banco de dados foi construído da seguinte forma:
+Inicialmente, eu busquei entender quais são as características e informações necessárias para um forncedor e decidi construir um modelo mais genérico com informações consideradas importantes para qualquer tipo de fornecedor. Dito isso, o modelo do banco de dados foi construído da seguinte forma:
 
 ![Modelo do banco de dados](./images/mer-banco-de-dado.png)
 
@@ -91,9 +63,7 @@ Após finalizar a implementação das páginas e funcionalidades se comunicando 
 
 <br>
 
-## Deploy da aplicação
-
-A princício, eu projetei o Deploy da aplicação para ser feito na plataforma da AWS (Amazon Web Services) para o back-end e o banco de dados alocados a uma instância no EC2 utilizando o Docker e o front-end seria implantando no Vercel. No entanto, devido a problemas de requisições http que eram bloqueadas pelo Vercel, já que para ter requisições https e com certificações vinda da API E possuir um domínio e configurar no Serviço do Route 53 da AWS, decidi subir o back-end e o banco de dados no Render e o front-end se manteve no Vercel.
+## Docker
 
 Para cada um dos serviços, eu criei um arquivo de configuração para construir uma imagem Docker montar containers para cada um dos serviços. No momento, só estou usando um container para o back-end, mas a ideia é que cada serviço tenha seu próprio container. Logo abaixo estão os arquivos Dockerfile para cada um dos serviços:
 
@@ -125,18 +95,18 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 No banco de dados PostgreSQL, eu utilizei a imagem oficial do PostgreSQL disponível no Docker Hub. a minha execução do container foi feita da seguinte forma:
 
 ```bash
-docker run --name backend-desafio-insightlab \
-  --network rede-insightlab \
+docker run --name backend-sistema-fornecedores \
+  --network sistema-fornecedores \
   -p 8080:8080 \
   -e SPRING_APPLICATION_NAME=backend \
-  -e SPRING_DATASOURCE_URL=jdbc:postgresql://172.18.0.2:5432/desafio_insightlab \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://172.18.0.2:5432/sistema-fornecedores \
   -e SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver \
   -e SPRING_DATASOURCE_USERNAME=postgres \
   -e SPRING_DATASOURCE_PASSWORD=postgres \
   -e SPRING_JPA_HIBERNATE_DDL_AUTO=update \
   -e FRONTEND_URL=https://desafio-insightlab-nu.vercel.app/ \
   -e API_TOKEN_SECRET=${JWT_SECRET:qwertyuiopasdfghjklzxcvbnm1234567890} \
-  -d alyssonaraujo/backend-desafio-insightlab:latest
+  -d alyssonaraujo/backend-sistema-fornecedores:latest
 ```
 
 ### Dockerfile do front-end
@@ -165,12 +135,7 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-Minha proposta era alocar 2 containers dentro de uma rede no Docker chamada `rede-insightlab` para que eles possam se comunicar entre si, mas devido aos problemas citados acima com o Vercel, isso não foi possível.
-
-
-### Deploy no Render e no Vercel
-
-Para realizar o deploy da aplicação no Render e no Vercel, conectei minha conta do Gitlab em ambos os serviços e configurei o deploy automático para cada um dos deles. Dessa forma, toda vez que eu fizer um push no repositório, a aplicação será automaticamente atualizada.
+Recomendo criar 3 containers (Front-end, Back-end e o banco de dados) dentro de uma rede no Docker para que eles possam se comunicar entre si de uma maneira mais fácil.
 
 <br>
 
